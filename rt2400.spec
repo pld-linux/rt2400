@@ -84,10 +84,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc Module/iwconfig_usage.txt Module/ifcfg-ra0
+%doc Module/iwconfig_usage.txt Module/ifcfg-ra0 Module/unload Module/load 
 /lib/modules/%{_kernel_ver}/misc/*.o*
 
 %files -n kernel-smp-net-rt2400
 %defattr(644,root,root,755)
-%doc Module/iwconfig_usage.txt Module/ifcfg-ra0
+%doc Module/iwconfig_usage.txt Module/ifcfg-ra0 Module/unload Module/load 
 /lib/modules/%{_kernel_ver}smp/misc/*.o*
