@@ -84,12 +84,13 @@ done
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/$dir
-install rt2400-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/$dir/rt2400.ko
+
+install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
+install Module/rt2400-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/rt2400.ko
 %if %{with smp} && %{with dist_kernel}
-install $rt2400-smp.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/$dir/rt2400.ko
+install Module/rt2400-smp.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc/rt2400.ko
 %endif
 %endif
 
@@ -111,11 +112,11 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with kernel}
 %files -n kernel-%{module}
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/$dir/*.ko*
+/lib/modules/%{_kernel_ver}/misc/*.ko*
 
 %if %{with smp} && %{with dist_kernel}
 %files -n kernel-smp-%{module}
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/$dir/*.ko*
+/lib/modules/%{_kernel_ver}smp/misc/*.ko*
 %endif
 %endif
