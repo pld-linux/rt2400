@@ -11,6 +11,7 @@ Release:	%{_rel}@%{_kernel_ver_str}
 License:	MPL or GPL
 Group:		Base/Kernel
 Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}.tgz
+# Source0-md5:  dfe96d4699b5d3a75eb5f40e812f3a11
 URL:		http://www.minitar.com
 %{?with_dist_kernel:BuildRequires:	kernel-headers >= 2.4.0}
 BuildRequires:	%{kgcc_package}
