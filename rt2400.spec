@@ -1,7 +1,4 @@
 #
-# TODO:
-#		- rename spec to rt2400.spec
-#
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -147,10 +144,10 @@ rm -rf $RPM_BUILD_ROOT
 %depmod %{_kernel_ver}
 
 %post -n kernel-smp-net-rt2400
-%depmod %{_kernel_ver}
+%depmod %{_kernel_ver}smp
 
 %postun -n kernel-smp-net-rt2400
-%depmod %{_kernel_ver}
+%depmod %{_kernel_ver}smp
 
 %if %{with userspace}
 %files
