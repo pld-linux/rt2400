@@ -29,6 +29,7 @@ BuildRequires:	rpmbuild(macros) >= 1.153
 %if %{with userspace}
 BuildRequires:	pkgconfig
 BuildRequires:	qt-devel >= 3.1.1
+BuildRequires:	XFree86-devel
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
