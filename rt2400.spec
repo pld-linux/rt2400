@@ -1,72 +1,62 @@
+#
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	smp		# don't build SMP module
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
-
-
-#
-# main package.
 #
 %define module net-rt2400
-Name:           kernel-net-rt2400
-Version:        1.1.1
-%define _rel    0.b1.0.1
-Release:        %{_rel}@%{_kernel_ver_str}
-License:        MPL or GPL
-# Source0:      http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
-Source0:        http://dl.sf.net/rt2400/rt2400-%{version}-b1.tar.gz
-# Source0-md5:  bb0b34ebb9a39f3313aaf8e976e99ca1
-# URL:          http://www.minitar.com
-URL:            http://rt2400.sourceforge.net/
-Group:          Base/Kernel
-BuildRoot:      %{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Summary:	Linux driver for WLAN card base on RT2400
+Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk³adzie RT2400
+Name:		kernel-net-rt2400
+Version:	1.1.1
+%define	_rel	0.b1.0.1
+Release:	%{_rel}@%{_kernel_ver_str}
+Group:		Base/Kernel
+License:	MPL or GPL
+# Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
+Source0:	http://dl.sf.net/rt2400/rt2400-%{version}-b1.tar.gz
+# Source0-md5:	bb0b34ebb9a39f3313aaf8e976e99ca1
+# URL:		http://www.minitar.com/
+URL:		http://rt2400.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
-
-Summary:	Linux driver for WLAN card base on RT2400
-Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk3adzie RT2400
-Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%description -n kernel-%{module}
-This is driver for ... for Linux.
+%description -n kernel-net-rt2400
+This is driver for WLAN card based on RT2400 for Linux.
 
 This package contains Linux module.
 
 %description -n kernel-net-rt2400 -l pl
-Sterownik dla Linuksa do ...
+Sterownik dla Linuksa do kart WLAN opartych o uk³ad RT2400.
 
 Ten pakiet zawiera modu³ j±dra Linuksa.
 
-%package -n kernel-smp-%{module}
-Summary:	Linux SMP driver for ...
-Summary(pl):	Sterownik dla Linuksa SMP do ...
+%package -n kernel-smp-rt2400
+Summary:	Linux SMP driver for WLAN card base on RT2400
+Summary(pl):	Sterownik dla Linuksa SMP do kart bezprzewodowych na uk³adzie RT2400
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
 
-%description -n kernel-smp-%{module}
-This is driver for ... for Linux.
+%description -n kernel-smp-rt2400
+This is driver for WLAN card based on RT2400 for Linux.
 
 This package contains Linux SMP module.
 
-%description -n kernel-smp-%{module} -l pl
-Sterownik dla Linuksa do ...
+%description -n kernel-smp-rt2400 -l pl
+Sterownik dla Linuksa do kart WLAN opartych o uk³ad RT2400.
 
 Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 
 %build
-%if %{with userspace}
-
-
-%endif
-
 %if %{with kernel}
 # kernel module(s)
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
@@ -79,9 +69,6 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
     ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
     touch include/config/MARKER
-#
-#	patching/creating makefile(s) (optional)
-#
     %{__make} -C %{_kernelsrcdir} clean modules \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
 	M=$PWD O=$PWD \
@@ -92,11 +79,6 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-%if %{with userspace}
-
-
-%endif
 
 %if %{with kernel}
 install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/$dir
@@ -133,10 +115,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/$dir/*.ko*
 %endif
-%endif
-
-%if %{with userspace}
-#%%files ...
-%defattr(644,root,root,755)
-
 %endif
