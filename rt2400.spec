@@ -127,12 +127,12 @@ install -D Utility/RaConfig $RPM_BUILD_ROOT%{_bindir}/RaConfig
 
 %if %{with kernel}
 cd Module
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/drivers/net/wireless
+install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/drivers/net/wireless
 install rt2400-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/drivers/net/wireless/rt2400.ko
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/rt2400.ko
 %if %{with smp} && %{with dist_kernel}
 install rt2400-smp.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/drivers/net/wireless/rt2400.ko
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless/rt2400.ko
 %endif
 cd -
 %endif
@@ -162,11 +162,11 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with kernel}
 %files -n kernel-net-rt2400
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/drivers/net/wireless/*.ko*
+/lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/*.ko*
 
 %if %{with smp} && %{with dist_kernel}
 %files -n kernel-smp-net-rt2400
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/drivers/net/wireless/*.ko*
+/lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless/*.ko*
 %endif
 %endif
