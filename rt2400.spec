@@ -38,7 +38,7 @@ Sterownik dla Linuksa do kart WLAN opartych o uk³ad RT2400.
 
 Ten pakiet zawiera modu³ j±dra Linuksa.
 
-%package -n kernel-smp-rt2400
+%package -n kernel-smp-net-rt2400
 Summary:	Linux SMP driver for WLAN card base on RT2400
 Summary(pl):	Sterownik dla Linuksa SMP do kart bezprzewodowych na uk³adzie RT2400
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -46,12 +46,12 @@ Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
 
-%description -n kernel-smp-rt2400
+%description -n kernel-smp-net-rt2400
 This is driver for WLAN card based on RT2400 for Linux.
 
 This package contains Linux SMP module.
 
-%description -n kernel-smp-rt2400 -l pl
+%description -n kernel-smp-net-rt2400 -l pl
 Sterownik dla Linuksa do kart WLAN opartych o uk³ad RT2400.
 
 Ten pakiet zawiera modu³ j±dra Linuksa SMP.
