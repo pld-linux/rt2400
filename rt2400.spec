@@ -10,12 +10,12 @@ Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
 Name:		rt2400
 Version:	1.2.0
-%define		_rel	2
+%define		_rel	3
 Release:	%{_rel}
 Group:		Base/Kernel
 License:	GPL v2
 # Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
-Source0:	http://dl.sf.net/rt2400/rt2400-%{version}.tar.gz
+Source0:	http://dl.sf.net/rt2400/%{name}-%{version}.tar.gz
 # Source0-md5:  d107a738db2cc0c06a6f400d9948fc73
 # URL:		http://www.minitar.com/
 URL:		http://rt2400.sourceforge.net/
@@ -44,6 +44,7 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
+%{?with_dist_kernel:Requires(postun):	kernel}
 
 %description -n kernel-net-rt2400
 This is a Linux driver for WLAN cards based on RT2400.
@@ -63,6 +64,7 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
+%{?with_dist_kernel:Requires(postun):	kernel-smp}
 
 %description -n kernel-smp-net-rt2400
 This is a Linux driver for WLAN cards based on RT2400.
@@ -137,10 +139,10 @@ cd -
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
+%post -n kernel-net-rt2400
 %depmod %{_kernel_ver}
 
-%postun
+%postun -n kernel-net-rt2400
 %depmod %{_kernel_ver}
 
 %post -n kernel-smp-net-rt2400
