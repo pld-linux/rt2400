@@ -74,9 +74,9 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     touch include/config/MARKER
     %{__make} -C %{_kernelsrcdir} clean modules \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
-	M=$PWD O=$PWD \
+	M=$PWD/Module O=$PWD \
 	%{?with_verbose:V=1}
-    mv $mod_name{,-$cfg}.ko
+    mv Module/rt2400{,-$cfg}.ko
 done
 %endif
 
@@ -85,11 +85,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
 install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/$dir
-install $mod_name-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/$dir/$mod_name.ko
+install rt2400-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/$dir/rt2400.ko
 %if %{with smp} && %{with dist_kernel}
-install $mod_name-smp.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/$dir/$mod_name.ko
+install $rt2400-smp.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/$dir/rt2400.ko
 %endif
 %endif
 
