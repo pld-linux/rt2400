@@ -1,4 +1,7 @@
 #
+# TODO
+#		- utility subpkg.
+#
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -6,12 +9,11 @@
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
 #
-%define module net-rt2400
 Summary:	Linux driver for WLAN card base on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk³adzie RT2400
 Name:		kernel-net-rt2400
 Version:	1.2.0
-%define	_rel	0.1
+%define		_rel	0.1
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 License:	MPL or GPL
@@ -22,7 +24,7 @@ Source0:	http://dl.sf.net/rt2400/rt2400-%{version}.tar.gz
 URL:		http://rt2400.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
-#BuildRequires:	rpmbuild(macros) >= 1.153
+BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
@@ -62,6 +64,7 @@ Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 %build
 %if %{with kernel}
 # kernel module(s)
+cd Module
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
     if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 	exit 1
@@ -72,26 +75,31 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
     ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
     touch include/config/MARKER
-    %{__make} -C %{_kernelsrcdir} clean modules \
+    %{__make} -C %{_kernelsrcdir} clean \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
-	M=$PWD/Module O=$PWD \
+	M=$PWD O=$PWD \
 	%{?with_verbose:V=1}
-    mv Module/rt2400{,-$cfg}.ko
+    %{__make} -C %{_kernelsrcdir} modules \
+	M=$PWD O=$PWD \
+	%{?with_verbose:V=1}
+    mv rt2400{,-$cfg}.ko
 done
+cd -
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
-install Module/rt2400-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/rt2400.ko
+cd Module
+install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/drivers/net/wireless
+install rt2400-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/drivers/net/wireless/rt2400.ko
 %if %{with smp} && %{with dist_kernel}
-install Module/rt2400-smp.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc/rt2400.ko
+install rt2400-smp.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/drivers/net/wireless/rt2400.ko
 %endif
+cd -
 %endif
 
 %clean
@@ -103,20 +111,20 @@ rm -rf $RPM_BUILD_ROOT
 %postun
 %depmod %{_kernel_ver}
 
-%post -n kernel-smp-%{module}
+%post -n kernel-smp-net-rt2400
 %depmod %{_kernel_ver}
 
-%postun -n kernel-smp-%{module}
+%postun -n kernel-smp-net-rt2400
 %depmod %{_kernel_ver}
 
 %if %{with kernel}
-%files -n kernel-%{module}
+%files -n kernel-net-rt2400
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/misc/*.ko*
+/lib/modules/%{_kernel_ver}/drivers/net/wireless/*.ko*
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-%{module}
+%files -n kernel-smp-net-rt2400
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/misc/*.ko*
+/lib/modules/%{_kernel_ver}smp/drivers/net/wireless/*.ko*
 %endif
 %endif
