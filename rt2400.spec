@@ -5,14 +5,16 @@
 Summary:	Linux driver for WLAN card base on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk³adzie RT2400
 Name:		kernel-net-rt2400
-Version:	1.1.0
-%define	_rel	1
+Version:	1.1.1
+%define	_rel	0.b1.0.1
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	MPL or GPL
 Group:		Base/Kernel
-Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}.tgz
-# Source0-md5:  dfe96d4699b5d3a75eb5f40e812f3a11
-URL:		http://www.minitar.com
+# Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
+Source0:	http://dl.sf.net/rt2400/rt2400-%{version}-b1.tar.gz
+# Source0-md5:	bb0b34ebb9a39f3313aaf8e976e99ca1
+# URL:		http://www.minitar.com
+URL:		http://rt2400.sourceforge.net/
 %{?with_dist_kernel:BuildRequires:	kernel-headers >= 2.4.0}
 BuildRequires:	%{kgcc_package}
 BuildRequires:	rpmbuild(macros) >= 1.118
@@ -41,7 +43,7 @@ Linux SMP driver for WLAN card base on RT2400.
 Sterownik dla Linuksa SMP do kart bezprzewodowych na uk³adzie RT2400.
 
 %prep
-%setup -q -n rt2400_linux
+%setup -q -c 
 
 %build
 cd Module
