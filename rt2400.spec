@@ -10,19 +10,19 @@
 Summary:	Linux driver for WLAN card base on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk³adzie RT2400
 Name:		kernel-net-rt2400
-Version:	1.1.1
-%define	_rel	0.b2.0.1
+Version:	1.2.0
+%define	_rel	0.1
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 License:	MPL or GPL
 # Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
-Source0:	http://dl.sf.net/rt2400/rt2400-%{version}-b2.tar.gz
-# Source0-md5:	5dab89c8eed34e5e8801a8c9213e375a
+Source0:	http://dl.sf.net/rt2400/rt2400-%{version}.tar.gz
+# Source0-md5:  d107a738db2cc0c06a6f400d9948fc73
 # URL:		http://www.minitar.com/
 URL:		http://rt2400.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.153
+#BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
