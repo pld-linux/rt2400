@@ -9,8 +9,8 @@
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
 #
-Summary:	Linux driver for WLAN card base on RT2400
-Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk³adzie RT2400
+Summary:	Linux driver for WLAN cards based on RT2400
+Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
 Name:		rt2400
 Version:	1.2.0
 %define		_rel	0.1
@@ -33,44 +33,44 @@ BuildRequires:	qt-devel >= 3.1.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
--- -empty- --
+A configuartion tool for WLAN cards based on RT2400.
 
 %description -l pl
--- -pusty- --
+Program do konfiguracji kart bezprzewodowych opartych na uk³adzie RT2400.
 
 %package -n kernel-net-rt2400
-Summary:	Linux driver for WLAN card base on RT2400
-Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk³adzie RT2400
+Summary:	Linux driver for WLAN cards based on RT2400
+Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
 
 %description -n kernel-net-rt2400
-This is driver for WLAN card based on RT2400 for Linux.
+This is a Linux driver for WLAN cards based on RT2400.
 
 This package contains Linux module.
 
 %description -n kernel-net-rt2400 -l pl
-Sterownik dla Linuksa do kart WLAN opartych o uk³ad RT2400.
+Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400.
 
 Ten pakiet zawiera modu³ j±dra Linuksa.
 
 %package -n kernel-smp-net-rt2400
-Summary:	Linux SMP driver for WLAN card base on RT2400
-Summary(pl):	Sterownik dla Linuksa SMP do kart bezprzewodowych na uk³adzie RT2400
+Summary:	Linux SMP driver for WLAN cards based on RT2400
+Summary(pl):	Sterownik dla Linuksa SMP do kart bezprzewodowych opartych na uk³adzie RT2400
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
 
 %description -n kernel-smp-net-rt2400
-This is driver for WLAN card based on RT2400 for Linux.
+This is a Linux driver for WLAN cards based on RT2400.
 
 This package contains Linux SMP module.
 
 %description -n kernel-smp-net-rt2400 -l pl
-Sterownik dla Linuksa do kart WLAN opartych o uk³ad RT2400.
+Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400.
 
 Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 
@@ -149,7 +149,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc CHANGELOG FAQ
+%doc CHANGELOG FAQ Module/iwconfig_usage.txt
 %attr(755,root,root) %{_bindir}/RaConfig
 %endif
 
