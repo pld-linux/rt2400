@@ -1,6 +1,6 @@
 #
-# TODO
-#		- utility subpkg.
+# TODO:
+#		- rename spec to rt2400.spec
 #
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
@@ -11,12 +11,12 @@
 #
 Summary:	Linux driver for WLAN card base on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk³adzie RT2400
-Name:		kernel-net-rt2400
+Name:		rt2400
 Version:	1.2.0
 %define		_rel	0.1
-Release:	%{_rel}@%{_kernel_ver_str}
+Release:	%{_rel}
 Group:		Base/Kernel
-License:	MPL or GPL
+License:	GPL v2
 # Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
 Source0:	http://dl.sf.net/rt2400/rt2400-%{version}.tar.gz
 # Source0-md5:  d107a738db2cc0c06a6f400d9948fc73
@@ -26,9 +26,25 @@ URL:		http://rt2400.sourceforge.net/
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
+%if %{with userspace}
+BuildRequires:	pkgconfig
+BuildRequires:	qt-devel >= 3.1.1
+%endif
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%description
+-- -empty- --
+
+%description -l pl
+-- -pusty- --
+
+%package -n kernel-net-rt2400
+Summary:	Linux driver for WLAN card base on RT2400
+Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk³adzie RT2400
+Release:	%{_rel}@%{_kernel_ver_str}
+Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description -n kernel-net-rt2400
 This is driver for WLAN card based on RT2400 for Linux.
@@ -59,9 +75,18 @@ Sterownik dla Linuksa do kart WLAN opartych o uk³ad RT2400.
 Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 
 %prep
-%setup -q -n rt2400-%{version}
+%setup -q
 
 %build
+%if %{with userspace}
+cd Utility
+%{__make} \
+    CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
+    LDFLAGS="%{rpmldflags}" \
+    QTDIR="%{_prefix}"
+cd -
+%endif
+
 %if %{with kernel}
 # kernel module(s)
 cd Module
@@ -90,6 +115,10 @@ cd -
 %install
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with userspace}
+install -D Utility/RaConfig $RPM_BUILD_ROOT%{_bindir}/RaConfig
+%endif
+
 %if %{with kernel}
 cd Module
 install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/drivers/net/wireless
@@ -116,6 +145,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun -n kernel-smp-net-rt2400
 %depmod %{_kernel_ver}
+
+%if %{with userspace}
+%files
+%defattr(644,root,root,755)
+%doc CHANGELOG FAQ
+%attr(755,root,root) %{_bindir}/RaConfig
+%endif
 
 %if %{with kernel}
 %files -n kernel-net-rt2400
