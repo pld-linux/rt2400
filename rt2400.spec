@@ -60,6 +60,7 @@ mv rt2400.o ../rt2400-up.o
 	CPPFLAGS="-D__KERNEL__ -D__KERNEL_SMP -DMODULE -DACX_DEBUG=1 -Iinclude -I%{_kernelsrcdir}/include -I../include" \
 	CFLAGS="%{rpmcflags} -fno-strict-aliasing -fno-common -pipe -fomit-frame-pointer -Wall -Wstrict-prototypes -Wno-unused"
 mv rt2400.o ../rt2400.o
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
