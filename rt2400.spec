@@ -1,75 +1,112 @@
-#
 # Conditional build:
-%bcond_without	dist_kernel	# without distribution kernel
+%bcond_without	dist_kernel	# allow non-distribution kernel
+%bcond_without	kernel		# don't build kernel modules
+%bcond_without	smp		# don't build SMP module
+%bcond_without	userspace	# don't build userspace module
+%bcond_with	verbose		# verbose build (V=1)
+
+
 #
+# main package.
+#
+%define module net-rt2400
+Name:           kernel-net-rt2400
+Version:        1.1.1
+%define _rel    0.b1.0.1
+Release:        %{_rel}@%{_kernel_ver_str}
+License:        MPL or GPL
+# Source0:      http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
+Source0:        http://dl.sf.net/rt2400/rt2400-%{version}-b1.tar.gz
+# Source0-md5:  bb0b34ebb9a39f3313aaf8e976e99ca1
+# URL:          http://www.minitar.com
+URL:            http://rt2400.sourceforge.net/
+Group:          Base/Kernel
+BuildRoot:      %{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+%if %{with kernel}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+BuildRequires:	rpmbuild(macros) >= 1.153
+%endif
+
 Summary:	Linux driver for WLAN card base on RT2400
-Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk³adzie RT2400
-Name:		kernel-net-rt2400
-Version:	1.1.1
-%define	_rel	0.b1.0.1
-Release:	%{_rel}@%{_kernel_ver_str}
-License:	MPL or GPL
+Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych na uk3adzie RT2400
 Group:		Base/Kernel
-# Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
-Source0:	http://dl.sf.net/rt2400/rt2400-%{version}-b1.tar.gz
-# Source0-md5:	bb0b34ebb9a39f3313aaf8e976e99ca1
-# URL:		http://www.minitar.com
-URL:		http://rt2400.sourceforge.net/
-%{?with_dist_kernel:BuildRequires:	kernel-headers >= 2.4.0}
-BuildRequires:	%{kgcc_package}
-BuildRequires:	rpmbuild(macros) >= 1.118
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
-Obsoletes:	kernel-net-rt2400
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%description
-This is driver for WLAN card based on RT2400 for Linux.
+%description -n kernel-%{module}
+This is driver for ... for Linux.
 
-%description -l pl
-Sterownik dla Linuksa do kart WLAN opartych o uk³ad RT2400.
+This package contains Linux module.
 
-%package -n kernel-smp-net-rt2400
-Summary:	Linux SMP driver for WLAN card base on RT2400
-Summary(pl):	Sterownik dla Linuksa SMP do kart bezprzewodowych na uk³adzie RT2400
+%description -n kernel-net-rt2400 -l pl
+Sterownik dla Linuksa do ...
+
+Ten pakiet zawiera modu³ j±dra Linuksa.
+
+%package -n kernel-smp-%{module}
+Summary:	Linux SMP driver for ...
+Summary(pl):	Sterownik dla Linuksa SMP do ...
+Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
 
-%description -n kernel-smp-net-rt2400
-Linux SMP driver for WLAN card base on RT2400.
+%description -n kernel-smp-%{module}
+This is driver for ... for Linux.
 
-%description -n kernel-smp-net-rt2400 -l pl
-Sterownik dla Linuksa SMP do kart bezprzewodowych na uk³adzie RT2400.
+This package contains Linux SMP module.
 
-%prep
-%setup -q -c 
+%description -n kernel-smp-%{module} -l pl
+Sterownik dla Linuksa do ...
+
+Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 
 %build
-cd Module
-cat > config.mk <<EOF
-LINUX_SRC=%{_kernelsrcdir}
-MODDIR=""
-TARGET_MODDIR=""
-EOF
-%{__make} \
-	CC="%{kgcc}" \
-	CPPFLAGS="-D__KERNEL__ -DMODULE -DACX_DEBUG=1 -Iinclude -I%{_kernelsrcdir}/include -I../include" \
-	CFLAGS="%{rpmcflags} -fno-strict-aliasing -fno-common -pipe -fomit-frame-pointer -Wall -Wstrict-prototypes -Wno-unused"
-mv rt2400.o ../rt2400-up.o
-%{__make} clean 
-%{__make} \
-	CC="%{kgcc}" \
-	CPPFLAGS="-D__KERNEL__ -D__KERNEL_SMP -DMODULE -DACX_DEBUG=1 -Iinclude -I%{_kernelsrcdir}/include -I../include" \
-	CFLAGS="%{rpmcflags} -fno-strict-aliasing -fno-common -pipe -fomit-frame-pointer -Wall -Wstrict-prototypes -Wno-unused"
-mv rt2400.o ../rt2400.o
+%if %{with userspace}
+
+
+%endif
+
+%if %{with kernel}
+# kernel module(s)
+for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
+    if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
+	exit 1
+    fi
+    rm -rf include
+    install -d include/{linux,config}
+    ln -sf %{_kernelsrcdir}/config-$cfg .config
+    ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
+    ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
+    touch include/config/MARKER
+#
+#	patching/creating makefile(s) (optional)
+#
+    %{__make} -C %{_kernelsrcdir} clean modules \
+	RCS_FIND_IGNORE="-name '*.ko' -o" \
+	M=$PWD O=$PWD \
+	%{?with_verbose:V=1}
+    mv $mod_name{,-$cfg}.ko
+done
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
 
-install rt2400-up.o $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/rt2400.o
-install rt2400.o $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc/rt2400.o
+%if %{with userspace}
+
+
+%endif
+
+%if %{with kernel}
+install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/$dir
+install $mod_name-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/$dir/$mod_name.ko
+%if %{with smp} && %{with dist_kernel}
+install $mod_name-smp.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/$dir/$mod_name.ko
+%endif
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -80,18 +117,26 @@ rm -rf $RPM_BUILD_ROOT
 %postun
 %depmod %{_kernel_ver}
 
-%post	-n kernel-smp-net-rt2400
-%depmod %{_kernel_ver}smp
+%post -n kernel-smp-%{module}
+%depmod %{_kernel_ver}
 
-%postun	-n kernel-smp-net-rt2400
-%depmod %{_kernel_ver}smp
+%postun -n kernel-smp-%{module}
+%depmod %{_kernel_ver}
 
-%files
+%if %{with kernel}
+%files -n kernel-%{module}
 %defattr(644,root,root,755)
-%doc Module/iwconfig_usage.txt Module/ifcfg-ra0 Module/unload Module/load 
-/lib/modules/%{_kernel_ver}/misc/*.o*
+/lib/modules/%{_kernel_ver}/$dir/*.ko*
 
-%files -n kernel-smp-net-rt2400
+%if %{with smp} && %{with dist_kernel}
+%files -n kernel-smp-%{module}
 %defattr(644,root,root,755)
-%doc Module/iwconfig_usage.txt Module/ifcfg-ra0 Module/unload Module/load 
-/lib/modules/%{_kernel_ver}smp/misc/*.o*
+/lib/modules/%{_kernel_ver}smp/$dir/*.ko*
+%endif
+%endif
+
+%if %{with userspace}
+#%%files ...
+%defattr(644,root,root,755)
+
+%endif
