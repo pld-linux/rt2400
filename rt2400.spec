@@ -27,9 +27,9 @@ URL:		http://rt2400.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %if %{with userspace}
+BuildRequires:	XFree86-devel
 BuildRequires:	pkgconfig
 BuildRequires:	qt-devel >= 3.1.1
-BuildRequires:	XFree86-devel
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -37,7 +37,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 A configuartion tool for WLAN cards based on RT2400.
 
 %description -l pl
-Program do konfiguracji kart bezprzewodowych opartych na uk³adzie RT2400.
+Program do konfiguracji kart bezprzewodowych opartych na uk³adzie
+RT2400.
 
 %package -n kernel-net-rt2400
 Summary:	Linux driver for WLAN cards based on RT2400
@@ -53,7 +54,8 @@ This is a Linux driver for WLAN cards based on RT2400.
 This package contains Linux module.
 
 %description -n kernel-net-rt2400 -l pl
-Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400.
+Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie
+RT2400.
 
 Ten pakiet zawiera modu³ j±dra Linuksa.
 
@@ -71,7 +73,8 @@ This is a Linux driver for WLAN cards based on RT2400.
 This package contains Linux SMP module.
 
 %description -n kernel-smp-net-rt2400 -l pl
-Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400.
+Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie
+RT2400.
 
 Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 
