@@ -56,6 +56,9 @@ Sterownik dla Linuksa do kart WLAN opartych o uk³ad RT2400.
 
 Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 
+%prep
+%setup -q -n rt2400-%{version}
+
 %build
 %if %{with kernel}
 # kernel module(s)
