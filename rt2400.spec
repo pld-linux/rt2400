@@ -13,7 +13,7 @@ Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
 Name:		rt2400
 Version:	1.2.0
-%define		_rel	1
+%define		_rel	2
 Release:	%{_rel}
 Group:		Base/Kernel
 License:	GPL v2
@@ -81,13 +81,15 @@ Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 %prep
 %setup -q
 
+%{__perl} -pi -e 's@/lib@/%{_lib}@g' Utility/Makefile
+
 %build
 %if %{with userspace}
 cd Utility
 %{__make} \
-    CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
-    LDFLAGS="%{rpmldflags}" \
-    QTDIR="%{_prefix}"
+	CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
+	LDFLAGS="%{rpmldflags}" \
+	QTDIR="%{_prefix}"
 cd -
 %endif
 
