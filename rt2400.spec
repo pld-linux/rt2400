@@ -28,6 +28,7 @@ BuildRequires:	XFree86-devel
 BuildRequires:	pkgconfig
 BuildRequires:	qt-devel >= 3.1.1
 %endif
+BuildRequires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
