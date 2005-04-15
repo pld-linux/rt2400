@@ -16,8 +16,8 @@ Release:	%{_rel}
 Group:		Base/Kernel
 License:	GPL v2
 # Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
-Source0:	http://dl.sf.net/rt2400/%{name}-%{version}%{snap}.tar.gz
-# Source0-md5:	a49f3bc78a2468138b1fad51ae9aaa33
+Source0:	http://dl.sourceforge.net/rt2400/%{name}-%{version}%{snap}.tar.gz
+# Source0-md5:	5899c1105bde1f68415a27e82b743fc0
 # URL:		http://www.minitar.com/
 URL:		http://rt2400.sourceforge.net/
 %if %{with kernel}
