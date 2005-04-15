@@ -9,13 +9,14 @@
 Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
 Name:		rt2400
-Version:	1.2.1
+Version:	1.2.2
+%define		snap -b2
 %define		_rel	1
 Release:	%{_rel}
 Group:		Base/Kernel
 License:	GPL v2
 # Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
-Source0:	http://dl.sf.net/rt2400/%{name}-%{version}.tar.gz
+Source0:	http://dl.sf.net/rt2400/%{name}-%{version}%{snap}.tar.gz
 # Source0-md5:	a49f3bc78a2468138b1fad51ae9aaa33
 # URL:		http://www.minitar.com/
 URL:		http://rt2400.sourceforge.net/
@@ -81,16 +82,20 @@ Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 %prep
 %setup -q
 
-%{__perl} -pi -e 's@/lib@/%{_lib}@g' Utility/Makefile
+#%{__perl} -pi -e 's@/lib@/%{_lib}@g' Utility/Makefile
 
 %build
 %if %{with userspace}
 cd Utility
+qmake -o Makefile raconfig2400.pro
+#%{__make} LDFLAGS="%{rpmldflags}" CXXFLAGS="%{rpmcflags}"
+mv Makefile Makefile.orig
+sed -e 's/lqt/lqt-mt/g' Makefile.orig > Makefile
 %{__make} \
-	CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
-	LDFLAGS="%{rpmldflags}" \
-	QTDIR="%{_prefix}"
-cd -
+        CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
+        LDFLAGS="%{rpmldflags}" \
+        QTDIR="%{_prefix}"
+cd ..
 %endif
 
 %if %{with kernel}
@@ -122,7 +127,7 @@ cd -
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with userspace}
-install -D Utility/RaConfig $RPM_BUILD_ROOT%{_bindir}/RaConfig
+install -D Utility/RaConfig2400 $RPM_BUILD_ROOT%{_bindir}/RaConfig2400
 %endif
 
 %if %{with kernel}
@@ -156,7 +161,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc CHANGELOG FAQ 
-%attr(755,root,root) %{_bindir}/RaConfig
+%attr(755,root,root) %{_bindir}/RaConfig2400
 %endif
 
 %if %{with kernel}
