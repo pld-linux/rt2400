@@ -11,7 +11,7 @@ Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie 
 Name:		rt2400
 Version:	1.2.2
 %define		snap -b2
-%define		_rel	1
+%define		_rel	2
 Release:	%{_rel}
 Group:		Base/Kernel
 License:	GPL v2
@@ -28,6 +28,7 @@ BuildRequires:	rpmbuild(macros) >= 1.153
 BuildRequires:	XFree86-devel
 BuildRequires:	pkgconfig
 BuildRequires:	qt-devel >= 3.1.1
+BuildRequires:	qmake
 %endif
 BuildRequires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
