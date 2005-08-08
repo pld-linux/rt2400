@@ -10,14 +10,14 @@ Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
 Name:		rt2400
 Version:	1.2.2
-%define		snap -b2
-%define		_rel	2
+%define		snap -b3
+%define		_rel	1
 Release:	%{_rel}
 Group:		Base/Kernel
 License:	GPL v2
 # Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
 Source0:	http://dl.sourceforge.net/rt2400/%{name}-%{version}%{snap}.tar.gz
-# Source0-md5:	5899c1105bde1f68415a27e82b743fc0
+# Source0-md5:	333bf6d7fa81a6d78c72aad6a48e9bc3
 # URL:		http://www.minitar.com/
 URL:		http://rt2400.sourceforge.net/
 %if %{with kernel}
@@ -81,7 +81,7 @@ RT2400.
 Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}%{snap}
 
 #%{__perl} -pi -e 's@/lib@/%{_lib}@g' Utility/Makefile
 
