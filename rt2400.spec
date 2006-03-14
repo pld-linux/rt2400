@@ -15,7 +15,7 @@ Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie 
 Name:		rt2400
 Version:	1.2.2
 %define		snap -b3
-%define		_rel	2
+%define		_rel	3
 Release:	%{_rel}
 Group:		Base/Kernel
 License:	GPL v2
@@ -110,25 +110,35 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
 	fi
-	rm -rf include
-	install -d include/{linux,config}
-	ln -sf %{_kernelsrcdir}/config-$cfg .config
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
-%ifarch ppc ppc64
-        install -d include/asm
-        [ ! -d %{_kernelsrcdir}/include/asm-powerpc ] || ln -sf %{_kernelsrcdir}/include/asm-powerpc/* include/asm
-        [ ! -d %{_kernelsrcdir}/include/asm-%{_target_base_arch} ] || ln -snf %{_kernelsrcdir}/include/asm-%{_target_base_arch}/* include/asm
+	install -d o/include/linux
+	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
+	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
+	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
+%if %{with dist_kernel}
+	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
 %else
-        ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
+	install -d o/include/config
+	touch o/include/config/MARKER
+	ln -sf %{_kernelsrcdir}/scripts o/scripts
 %endif
-	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
-	touch include/config/MARKER
+%ifarch ppc ppc64
+        install -d o/include/asm
+        [ ! -d %{_kernelsrcdir}/include/asm-powerpc ] || ln -sf %{_kernelsrcdir}/include/asm-powerpc/* o/include/asm
+        [ ! -d %{_kernelsrcdir}/include/asm-%{_target_base_arch} ] || ln -snf %{_kernelsrcdir}/include/asm-%{_target_base_arch}/* o/include/asm
+%else
+        ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} o/include/asm
+%endif
 	%{__make} -C %{_kernelsrcdir} clean \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		M=$PWD O=$PWD \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
+		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
 	%{__make} -C %{_kernelsrcdir} modules \
-		M=$PWD O=$PWD \
+		CC="%{__cc}" CPP="%{__cpp}" \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
+		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
 	mv rt2400{,-$cfg}.ko
 done
