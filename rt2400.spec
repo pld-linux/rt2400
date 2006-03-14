@@ -96,19 +96,21 @@ qmake -o Makefile raconfig2400.pro
 #%{__make} LDFLAGS="%{rpmldflags}" CXXFLAGS="%{rpmcflags}"
 mv Makefile Makefile.orig
 sed -e 's/lqt/lqt-mt/g' Makefile.orig > Makefile
-%ifarch sparc
-	# workaround for (probably GCC) bug on sparc:
-	# `unable to find a register to spill in class `FP_REGS''
-	BUGFLAGS="-fno-schedule-insns"
-%endif
 %{__make} \
-        CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags) $BUGFLAGS" \
+        CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
         LDFLAGS="%{rpmldflags}" \
         QTDIR="%{_prefix}"
 cd ..
 %endif
 
 %if %{with kernel}
+%ifarch sparc
+	# workaround for (probably GCC) bug on sparc:
+	# `unable to find a register to spill in class `FP_REGS''
+	BUGFLAGS="-fno-schedule-insns"
+%else
+	BUGFLAGS=
+%endif
 # kernel module(s)
 cd Module
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
@@ -126,13 +128,6 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	touch o/include/config/MARKER
 	ln -sf %{_kernelsrcdir}/scripts o/scripts
 %endif
-%ifarch ppc ppc64
-        install -d o/include/asm
-        [ ! -d %{_kernelsrcdir}/include/asm-powerpc ] || ln -sf %{_kernelsrcdir}/include/asm-powerpc/* o/include/asm
-        [ ! -d %{_kernelsrcdir}/include/asm-%{_target_base_arch} ] || ln -snf %{_kernelsrcdir}/include/asm-%{_target_base_arch}/* o/include/asm
-%else
-        ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} o/include/asm
-%endif
 	%{__make} -C %{_kernelsrcdir} clean \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
 		SYSSRC=%{_kernelsrcdir} \
@@ -140,7 +135,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
 	%{__make} -C %{_kernelsrcdir} modules \
-		CC="%{__cc}" CPP="%{__cpp}" \
+		CC="%{__cc} $BUGFLAGS" CPP="%{__cpp}" \
 		SYSSRC=%{_kernelsrcdir} \
 		SYSOUT=$PWD/o \
 		M=$PWD O=$PWD/o \
