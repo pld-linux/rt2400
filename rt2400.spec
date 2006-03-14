@@ -96,8 +96,13 @@ qmake -o Makefile raconfig2400.pro
 #%{__make} LDFLAGS="%{rpmldflags}" CXXFLAGS="%{rpmcflags}"
 mv Makefile Makefile.orig
 sed -e 's/lqt/lqt-mt/g' Makefile.orig > Makefile
+%ifarch sparc
+	# workaround for (probably GCC) bug on sparc:
+	# `unable to find a register to spill in class `FP_REGS''
+	BUGFLAGS="-fno-schedule-insns"
+%endif
 %{__make} \
-        CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
+        CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags) $BUGFLAGS" \
         LDFLAGS="%{rpmldflags}" \
         QTDIR="%{_prefix}"
 cd ..
