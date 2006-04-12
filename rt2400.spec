@@ -10,29 +10,29 @@
 %undefine	with_smp
 %endif
 #
+%define		snap -b3
+%define		_rel	3
 Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
 Name:		rt2400
 Version:	1.2.2
-%define		snap -b3
-%define		_rel	3
 Release:	%{_rel}
-Group:		Base/Kernel
 License:	GPL v2
+Group:		Base/Kernel
 # Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
 Source0:	http://dl.sourceforge.net/rt2400/%{name}-%{version}%{snap}.tar.gz
 # Source0-md5:	333bf6d7fa81a6d78c72aad6a48e9bc3
 # URL:		http://www.minitar.com/
 URL:		http://rt2400.sourceforge.net/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %if %{with userspace}
 BuildRequires:	XFree86-devel
 BuildRequires:	pkgconfig
-BuildRequires:	qt-devel >= 3.1.1
 BuildRequires:	qmake
+BuildRequires:	qt-devel >= 6:3.1.1
 %endif
 BuildRequires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -182,7 +182,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc CHANGELOG FAQ 
+%doc CHANGELOG FAQ
 %attr(755,root,root) %{_bindir}/RaConfig2400
 %endif
 
