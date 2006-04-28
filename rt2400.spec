@@ -19,11 +19,9 @@ Version:	1.2.2
 Release:	%{_rel}
 License:	GPL v2
 Group:		Base/Kernel
-# Source0:	http://www.minitar.com/downloads/rt2400_linux-%{version}-b1.tgz
 Source0:	http://dl.sourceforge.net/rt2400/%{name}-%{version}%{snap}.tar.gz
 # Source0-md5:	333bf6d7fa81a6d78c72aad6a48e9bc3
-# URL:		http://www.minitar.com/
-URL:		http://rt2400.sourceforge.net/
+URL:		http://rt2x00.serialmonkey.com/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.153
@@ -93,7 +91,6 @@ Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 %if %{with userspace}
 cd Utility
 qmake -o Makefile raconfig2400.pro
-#%{__make} LDFLAGS="%{rpmldflags}" CXXFLAGS="%{rpmcflags}"
 mv Makefile Makefile.orig
 sed -e 's/lqt/lqt-mt/g' Makefile.orig > Makefile
 %{__make} \
