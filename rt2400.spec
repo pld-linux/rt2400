@@ -10,7 +10,7 @@
 %undefine	with_smp
 %endif
 #
-%define		snap -b3
+%define		snap	-b3
 %define		_rel	4
 Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
@@ -27,7 +27,6 @@ URL:		http://rt2x00.serialmonkey.com/
 BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %if %{with userspace}
-BuildRequires:	XFree86-devel
 BuildRequires:	pkgconfig
 BuildRequires:	qmake
 BuildRequires:	qt-devel >= 6:3.1.1
@@ -90,9 +89,8 @@ Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 %build
 %if %{with userspace}
 cd Utility
-qmake -o Makefile raconfig2400.pro
-mv Makefile Makefile.orig
-sed -e 's/lqt/lqt-mt/g' Makefile.orig > Makefile
+qmake -o Makefile.orig raconfig2400.pro
+sed -e 's/-lqt /-lqt-mt /g' Makefile.orig > Makefile
 %{__make} \
         CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
         LDFLAGS="%{rpmldflags}" \
