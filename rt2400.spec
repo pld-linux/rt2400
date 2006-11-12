@@ -25,7 +25,7 @@ Source0:	%{name}-%{version}%{snap}.tar.bz2
 URL:		http://rt2x00.serialmonkey.com/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.326
+BuildRequires:	rpmbuild(macros) >= 1.329
 %endif
 %if %{with userspace}
 BuildRequires:	pkgconfig
@@ -100,8 +100,7 @@ cd ..
 %endif
 
 %if %{with kernel}
-cd Module
-%build_kernel_modules -m rt2400 \
+%build_kernel_modules -C Module -m rt2400 \
 %ifarch sparc
 	EXTRA_CFLAGS="-fno-schedule-insns"
 	# workaround for (probably GCC) bug on sparc:
@@ -109,7 +108,6 @@ cd Module
 %else
 	# beware of evil '\'
 %endif
-cd -
 %endif
 
 %install
