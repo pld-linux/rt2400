@@ -85,7 +85,7 @@ Ten pakiet zawiera modu³ j±dra Linuksa SMP.
 %prep
 %setup -q -n %{name}-%{version}%{snap}
 
-#%{__perl} -pi -e 's@/lib@/%{_lib}@g' Utility/Makefile
+#%{__sed} -i -e 's@/lib@/%{_lib}@g' Utility/Makefile
 
 %build
 %if %{with userspace}
@@ -93,9 +93,9 @@ cd Utility
 qmake -o Makefile.orig raconfig2400.pro
 sed -e 's/-lqt /-lqt-mt /g' Makefile.orig > Makefile
 %{__make} \
-        CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
-        LDFLAGS="%{rpmldflags}" \
-        QTDIR="%{_prefix}"
+	CXXFLAGS="%{rpmcflags} %(pkg-config qt-mt --cflags)" \
+	LDFLAGS="%{rpmldflags}" \
+	QTDIR="%{_prefix}"
 cd ..
 %endif
 
