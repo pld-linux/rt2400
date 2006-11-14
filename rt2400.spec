@@ -25,7 +25,7 @@ Source0:	%{name}-%{version}%{snap}.tar.bz2
 URL:		http://rt2x00.serialmonkey.com/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.329
+BuildRequires:	rpmbuild(macros) >= 1.330
 %endif
 %if %{with userspace}
 BuildRequires:	pkgconfig
