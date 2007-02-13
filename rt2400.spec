@@ -18,7 +18,7 @@
 %define		snap	-cvs-20060911
 %define		_rel	7
 Summary:	Linux driver for WLAN cards based on RT2400
-Summary(pl.UTF-8):   Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
+Summary(pl.UTF-8):	Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
 Name:		rt2400
 Version:	1.2.2
 Release:	%{_rel}
@@ -49,7 +49,7 @@ RT2400.
 
 %package -n kernel%{_alt_kernel}-net-rt2400
 Summary:	Linux driver for WLAN cards based on RT2400
-Summary(pl.UTF-8):   Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
+Summary(pl.UTF-8):	Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
@@ -69,7 +69,7 @@ Ten pakiet zawiera moduł jądra Linuksa.
 
 %package -n kernel%{_alt_kernel}-smp-net-rt2400
 Summary:	Linux SMP driver for WLAN cards based on RT2400
-Summary(pl.UTF-8):   Sterownik dla Linuksa SMP do kart bezprzewodowych opartych na układzie RT2400
+Summary(pl.UTF-8):	Sterownik dla Linuksa SMP do kart bezprzewodowych opartych na układzie RT2400
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
