@@ -2,6 +2,7 @@
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
 %bcond_without	kernel		# don't build kernel modules
+%bcond_without	up		# don't build UP module
 %bcond_without	smp		# don't build SMP module
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
@@ -16,7 +17,7 @@
 %endif
 #
 %define		snap	-cvs-20060911
-%define		_rel	7
+%define		_rel	8
 Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
 Name:		rt2400
@@ -151,9 +152,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
+%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-net-rt2400
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/*.ko*
+%endif
 
 %if %{with smp} && %{with dist_kernel}
 %files -n kernel%{_alt_kernel}-smp-net-rt2400
