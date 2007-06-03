@@ -2,18 +2,12 @@
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
 %bcond_without	kernel		# don't build kernel modules
-%bcond_without	up		# don't build UP module
-%bcond_without	smp		# don't build SMP module
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
 #
 %if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
 %define	alt_kernel	grsecurity
-%endif
-#
-%ifarch sparc
-%undefine	with_smp
 %endif
 #
 %define		snap	-cvs-20060911
@@ -28,9 +22,10 @@ Group:		Base/Kernel
 # Source0:	http://dl.sourceforge.net/rt2400/%{name}-%{version}%{snap}.tar.gz
 Source0:	%{name}-%{version}%{snap}.tar.bz2
 # Source0-md5:	5a0c2c65af1364b215d56be2b881e24f
+Patch0:		%{name}-inc.patch
 URL:		http://rt2x00.serialmonkey.com/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.330
 %endif
 %if %{with userspace}
@@ -53,7 +48,7 @@ Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl.UTF-8):	Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_up}
+%{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
 %{?with_dist_kernel:Requires(postun):	kernel}
 
@@ -68,28 +63,9 @@ RT2400.
 
 Ten pakiet zawiera moduł jądra Linuksa.
 
-%package -n kernel%{_alt_kernel}-smp-net-rt2400
-Summary:	Linux SMP driver for WLAN cards based on RT2400
-Summary(pl.UTF-8):	Sterownik dla Linuksa SMP do kart bezprzewodowych opartych na układzie RT2400
-Release:	%{_rel}@%{_kernel_ver_str}
-Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_smp}
-Requires(post,postun):	/sbin/depmod
-%{?with_dist_kernel:Requires(postun):	kernel%{_alt_kernel}-smp}
-
-%description -n kernel%{_alt_kernel}-smp-net-rt2400
-This is a Linux driver for WLAN cards based on RT2400.
-
-This package contains Linux SMP module.
-
-%description -n kernel%{_alt_kernel}-smp-net-rt2400 -l pl.UTF-8
-Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie
-RT2400.
-
-Ten pakiet zawiera moduł jądra Linuksa SMP.
-
 %prep
 %setup -q -n %{name}-%{version}%{snap}
+%patch0 -p1
 
 #%{__sed} -i -e 's@/lib@/%{_lib}@g' Utility/Makefile
 
@@ -138,12 +114,6 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n kernel%{_alt_kernel}-net-rt2400
 %depmod %{_kernel_ver}
 
-%post -n kernel%{_alt_kernel}-smp-net-rt2400
-%depmod %{_kernel_ver}smp
-
-%postun -n kernel%{_alt_kernel}-smp-net-rt2400
-%depmod %{_kernel_ver}smp
-
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
@@ -152,15 +122,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
-%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-net-rt2400
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/*.ko*
-%endif
-
-%if %{with smp} && %{with dist_kernel}
-%files -n kernel%{_alt_kernel}-smp-net-rt2400
-%defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless/*.ko*
-%endif
 %endif
