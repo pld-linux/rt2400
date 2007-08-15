@@ -26,7 +26,7 @@ Patch0:		%{name}-inc.patch
 URL:		http://rt2x00.serialmonkey.com/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
-BuildRequires:	rpmbuild(macros) >= 1.330
+BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 %if %{with userspace}
 BuildRequires:	libiw-devel
