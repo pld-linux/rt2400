@@ -23,6 +23,8 @@ Group:		Base/Kernel
 Source0:	%{name}-%{version}%{snap}.tar.bz2
 # Source0-md5:	5a0c2c65af1364b215d56be2b881e24f
 Patch0:		%{name}-inc.patch
+Patch1:		%{name}-wireless_stats.patch
+Patch2:		%{name}-skb.patch
 URL:		http://rt2x00.serialmonkey.com/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -67,6 +69,8 @@ Ten pakiet zawiera moduł jądra Linuksa.
 %prep
 %setup -q -n %{name}-%{version}%{snap}
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 #%{__sed} -i -e 's@/lib@/%{_lib}@g' Utility/Makefile
 
