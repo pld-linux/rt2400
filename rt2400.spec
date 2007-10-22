@@ -59,7 +59,6 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
-%{?with_dist_kernel:Requires(postun):	kernel}
 
 %description -n kernel%{_alt_kernel}-net-rt2400
 This is a Linux driver for WLAN cards based on RT2400.
@@ -79,7 +78,6 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
-%{?with_dist_kernel:Requires(postun):	kernel%{_alt_kernel}-smp}
 
 %description -n kernel%{_alt_kernel}-smp-net-rt2400
 This is a Linux driver for WLAN cards based on RT2400.
