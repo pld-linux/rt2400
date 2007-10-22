@@ -8,14 +8,18 @@
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
 #
-%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
-%define	alt_kernel	grsecurity
-%endif
-#
 %ifarch sparc
 %undefine	with_smp
 %endif
 #
+%if %{without kernel}
+%undefine	with_dist_kernel
+%endif
+#
+%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
+%define	alt_kernel	grsecurity
+%endif
+
 %define		snap	-cvs-20060911
 %define		_rel	55
 Summary:	Linux driver for WLAN cards based on RT2400
