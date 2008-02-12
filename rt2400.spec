@@ -23,7 +23,7 @@
 %endif
 
 %define		snap	-cvs-20060911
-%define		_rel	60
+%define		_rel	61
 %define		pname	rt2400
 Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
