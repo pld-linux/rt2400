@@ -24,7 +24,7 @@ Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl):	Sterownik dla Linuksa do kart bezprzewodowych opartych na uk³adzie RT2400
 Name:		%{pname}%{_alt_kernel}
 Version:	1.2.2
-Release:	62
+Release:	63
 License:	GPL v2
 Group:		Base/Kernel
 # Source0:	http://dl.sourceforge.net/rt2400/%{pname}-%{version}%{snap}.tar.gz
