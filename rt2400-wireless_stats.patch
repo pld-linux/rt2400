@@ -1,0 +1,20 @@
+--- rt2400-1.2.2-cvs-20060911/Module/rtmp_main.c~	2006-08-23 15:54:54.000000000 +0000
++++ rt2400-1.2.2-cvs-20060911/Module/rtmp_main.c	2007-09-10 00:17:12.885667859 +0000
+@@ -254,7 +254,7 @@ INT __devinit   RT2400_probe(
+ 	net_dev->stop = RT2400_close;
+ 	net_dev->get_stats = RT2400_get_ether_stats;
+ 
+-#if WIRELESS_EXT >= 12
++#if WIRELESS_EXT >= 12 && WIRELESS_EXT < 17
+ 	net_dev->get_wireless_stats = RT2400_get_wireless_stats;
+ #endif
+ 
+@@ -867,7 +867,7 @@ static INT __init rt2400_init_module(VOI
+ #ifdef EXPORT_NO_SYMBOLS
+ 	EXPORT_NO_SYMBOLS;		// must use in init_module to avoid output symbol to /proc/ksyms
+ #endif
+-	return pci_module_init(&rt2400_driver);
++	return pci_register_driver(&rt2400_driver);
+ }
+ 
+ //

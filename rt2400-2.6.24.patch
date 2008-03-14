@@ -1,0 +1,26 @@
+--- rt2400-1.2.2-cvs-20060911/Module/rtmp_main.c~	2008-03-02 22:57:57.500169945 +0100
++++ rt2400-1.2.2-cvs-20060911/Module/rtmp_main.c	2008-03-02 23:00:01.491648089 +0100
+@@ -202,8 +202,9 @@ INT __devinit   RT2400_probe(
+ 		DBGPRINT(RT_DEBUG_TRACE, "init_ethernet failed\n");
+ 		goto err_out;
+ 	}
+-	
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24)	
+ 	SET_MODULE_OWNER(net_dev);
++#endif
+ 	SET_ETHTOOL_OPS(net_dev, &rt2x00_ethtool_ops);
+ 
+         #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
+@@ -328,8 +329,11 @@ INT RT2400_open(
+ 	{
+ 		NICDisableInterrupt(pAd);
+ 	}
+-
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,24)
++	status = request_irq(pAd->pPci_Dev->irq, RTMPIsr, IRQF_SHARED, net_dev->name, net_dev);
++#else
+ 	status = request_irq(pAd->pPci_Dev->irq, RTMPIsr, SA_SHIRQ, net_dev->name, net_dev);
++#endif
+ 	if (status)
+ 		return status;
+ 	RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_INTERRUPT_IN_USE);

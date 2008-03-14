@@ -1,0 +1,46 @@
+diff -Nur rt2400-1.2.2-cvs-20060911.org/Utility/addform.cpp rt2400-1.2.2-cvs-20060911/Utility/addform.cpp
+--- rt2400-1.2.2-cvs-20060911.org/Utility/addform.cpp	2004-12-04 05:34:45.000000000 +0000
++++ rt2400-1.2.2-cvs-20060911/Utility/addform.cpp	2007-06-03 20:28:54.360759304 +0000
+@@ -66,7 +66,6 @@
+ #include <string.h>
+ #include <sys/socket.h>
+ #include <sys/ioctl.h>
+-#include <linux/wireless.h>
+ #include <ctype.h>
+ 
+ extern char  *strAryNetworkType[3];
+diff -Nur rt2400-1.2.2-cvs-20060911.org/Utility/raconfig.cpp rt2400-1.2.2-cvs-20060911/Utility/raconfig.cpp
+--- rt2400-1.2.2-cvs-20060911.org/Utility/raconfig.cpp	2004-12-04 05:34:45.000000000 +0000
++++ rt2400-1.2.2-cvs-20060911/Utility/raconfig.cpp	2007-06-03 20:29:03.209143904 +0000
+@@ -46,7 +46,6 @@
+ #include <sys/socket.h>
+ #include <sys/ioctl.h>
+ #include <unistd.h>
+-#include <linux/wireless.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <sys/stat.h>  /* for mode definitions */
+diff -Nur rt2400-1.2.2-cvs-20060911.org/Utility/raconfigform.cpp rt2400-1.2.2-cvs-20060911/Utility/raconfigform.cpp
+--- rt2400-1.2.2-cvs-20060911.org/Utility/raconfigform.cpp	2004-12-04 05:34:45.000000000 +0000
++++ rt2400-1.2.2-cvs-20060911/Utility/raconfigform.cpp	2007-06-03 20:29:07.533331856 +0000
+@@ -71,7 +71,6 @@
+ #include <string.h>
+ #include <sys/socket.h>
+ #include <sys/ioctl.h>
+-#include <linux/wireless.h>
+ #include <unistd.h>
+ #include <sys/types.h>
+ #include <errno.h>
+diff -Nur rt2400-1.2.2-cvs-20060911.org/Utility/rt_tool.cpp rt2400-1.2.2-cvs-20060911/Utility/rt_tool.cpp
+--- rt2400-1.2.2-cvs-20060911.org/Utility/rt_tool.cpp	2004-12-04 05:34:45.000000000 +0000
++++ rt2400-1.2.2-cvs-20060911/Utility/rt_tool.cpp	2007-06-03 20:29:18.661815553 +0000
+@@ -38,8 +38,7 @@
+ #include <string.h>
+ #include <sys/socket.h>
+ #include <sys/ioctl.h>
+-#include <linux/wireless.h>
+-
++#include <iwlib.h>
+ #include "rt_tool.h"
+ 
+ 
