@@ -34,12 +34,13 @@ diff -Nur rt2400-1.2.2-cvs-20060911.org/Utility/raconfigform.cpp rt2400-1.2.2-cv
 diff -Nur rt2400-1.2.2-cvs-20060911.org/Utility/rt_tool.cpp rt2400-1.2.2-cvs-20060911/Utility/rt_tool.cpp
 --- rt2400-1.2.2-cvs-20060911.org/Utility/rt_tool.cpp	2004-12-04 05:34:45.000000000 +0000
 +++ rt2400-1.2.2-cvs-20060911/Utility/rt_tool.cpp	2007-06-03 20:29:18.661815553 +0000
-@@ -38,8 +38,6 @@
+@@ -38,8 +38,7 @@
  #include <string.h>
  #include <sys/socket.h>
  #include <sys/ioctl.h>
 -#include <linux/wireless.h>
 -
++#include <iwlib.h>
  #include "rt_tool.h"
  
  
