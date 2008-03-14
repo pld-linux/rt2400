@@ -52,9 +52,11 @@ Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl.UTF-8):	Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
-%{?with_dist_kernel:Requires(postun):	kernel}
+%if %{with dist_kernel}
+%requires_releq_kernel
+Requires(postun):	%releq_kernel
+%endif
 
 %description -n kernel%{_alt_kernel}-net-rt2400
 This is a Linux driver for WLAN cards based on RT2400.
