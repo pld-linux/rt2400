@@ -4,28 +4,35 @@
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
-%bcond_with	grsec_kernel	# build for kernel-grsecurity
-#
-%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
-%define	alt_kernel	grsecurity
+
+%if %{without kernel}
+%undefine	with_dist_kernel
 %endif
-#
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
+%endif
+%if %{without userspace}
+# nothing to be placed to debuginfo package
+%define		_enable_debug_packages	0
+%endif
+
+%define		rel		7
 %define		snap	-cvs-20060911
-%define		_rel	7
+%define		pname	rt2400
 Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl.UTF-8):	Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
-Name:		rt2400
+Name:		%{pname}%{_alt_kernel}
 Version:	1.2.2
-Release:	%{_rel}
+Release:	%{rel}
 License:	GPL v2
 Group:		Base/Kernel
-# Source0:	http://dl.sourceforge.net/rt2400/%{name}-%{version}%{snap}.tar.gz
-Source0:	%{name}-%{version}%{snap}.tar.bz2
+# Source0:	http://dl.sourceforge.net/rt2400/%{pname}-%{version}%{snap}.tar.gz
+Source0:	%{pname}-%{version}%{snap}.tar.bz2
 # Source0-md5:	5a0c2c65af1364b215d56be2b881e24f
-Patch0:		%{name}-inc.patch
-Patch1:		%{name}-wireless_stats.patch
-Patch2:		%{name}-skb.patch
-Patch3:		%{name}-2.6.24.patch
+Patch0:		%{pname}-inc.patch
+Patch1:		%{pname}-wireless_stats.patch
+Patch2:		%{pname}-skb.patch
+Patch3:		%{pname}-2.6.24.patch
 URL:		http://rt2x00.serialmonkey.com/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -50,7 +57,7 @@ RT2400.
 %package -n kernel%{_alt_kernel}-net-rt2400
 Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl.UTF-8):	Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
-Release:	%{_rel}@%{_kernel_ver_str}
+Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
@@ -70,7 +77,7 @@ RT2400.
 Ten pakiet zawiera moduł jądra Linuksa.
 
 %prep
-%setup -q -n %{name}-%{version}%{snap}
+%setup -q -n %{pname}-%{version}%{snap}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
