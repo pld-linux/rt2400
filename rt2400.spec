@@ -2,14 +2,8 @@
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
 %bcond_without	kernel		# don't build kernel modules
-%bcond_without	up		# don't build UP module
-%bcond_without	smp		# don't build SMP module
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
-
-%ifarch sparc
-%undefine	with_smp
-%endif
 
 %if %{without kernel}
 %undefine	with_dist_kernel
@@ -17,25 +11,35 @@
 %if "%{_alt_kernel}" != "%{nil}"
 %undefine	with_userspace
 %endif
+%if %{without userspace}
+# nothing to be placed to debuginfo package
+%define		_enable_debug_packages	0
+%endif
 
+%define		rel		64
 %define		snap	-cvs-20060911
 %define		pname	rt2400
 Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl.UTF-8):	Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
 Name:		%{pname}%{_alt_kernel}
 Version:	1.2.2
-Release:	63
+Release:	%{rel}
 License:	GPL v2
 Group:		Base/Kernel
 # Source0:	http://dl.sourceforge.net/rt2400/%{pname}-%{version}%{snap}.tar.gz
 Source0:	%{pname}-%{version}%{snap}.tar.bz2
 # Source0-md5:	5a0c2c65af1364b215d56be2b881e24f
+Patch0:		%{pname}-inc.patch
+Patch1:		%{pname}-wireless_stats.patch
+Patch2:		%{pname}-skb.patch
+Patch3:		%{pname}-2.6.24.patch
 URL:		http://rt2x00.serialmonkey.com/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.330
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
+BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 %if %{with userspace}
+BuildRequires:	libiw-devel
 BuildRequires:	pkgconfig
 BuildRequires:	qmake
 BuildRequires:	qt-devel >= 6:3.1.1
@@ -53,9 +57,11 @@ RT2400.
 %package -n kernel%{_alt_kernel}-net-rt2400
 Summary:	Linux driver for WLAN cards based on RT2400
 Summary(pl.UTF-8):	Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie RT2400
+Release:	%{rel}@%{_kernel_vermagic}
 Group:		Base/Kernel
-%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
+%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
+Obsoletes:	kernel%{_alt_kernel}-smp-net-rt2400
 
 %description -n kernel%{_alt_kernel}-net-rt2400
 This is a Linux driver for WLAN cards based on RT2400.
@@ -68,26 +74,12 @@ RT2400.
 
 Ten pakiet zawiera moduł jądra Linuksa.
 
-%package -n kernel%{_alt_kernel}-smp-net-rt2400
-Summary:	Linux SMP driver for WLAN cards based on RT2400
-Summary(pl.UTF-8):	Sterownik dla Linuksa SMP do kart bezprzewodowych opartych na układzie RT2400
-Group:		Base/Kernel
-%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}-smp(vermagic) = %{_kernel_ver}}
-Requires(post,postun):	/sbin/depmod
-
-%description -n kernel%{_alt_kernel}-smp-net-rt2400
-This is a Linux driver for WLAN cards based on RT2400.
-
-This package contains Linux SMP module.
-
-%description -n kernel%{_alt_kernel}-smp-net-rt2400 -l pl.UTF-8
-Sterownik dla Linuksa do kart bezprzewodowych opartych na układzie
-RT2400.
-
-Ten pakiet zawiera moduł jądra Linuksa SMP.
-
 %prep
 %setup -q -n %{pname}-%{version}%{snap}
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
 %if %{with userspace}
@@ -120,9 +112,7 @@ install -D Utility/RaConfig2400 $RPM_BUILD_ROOT%{_bindir}/RaConfig2400
 %endif
 
 %if %{with kernel}
-cd Module
-%install_kernel_modules -m rt2400 -d kernel/drivers/net/wireless
-cd -
+%install_kernel_modules -m Module/rt2400 -d kernel/drivers/net/wireless
 %endif
 
 %clean
@@ -134,12 +124,6 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n kernel%{_alt_kernel}-net-rt2400
 %depmod %{_kernel_ver}
 
-%post -n kernel%{_alt_kernel}-smp-net-rt2400
-%depmod %{_kernel_ver}smp
-
-%postun -n kernel%{_alt_kernel}-smp-net-rt2400
-%depmod %{_kernel_ver}smp
-
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
@@ -148,15 +132,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
-%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-net-rt2400
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/drivers/net/wireless/*.ko*
-%endif
-
-%if %{with smp} && %{with dist_kernel}
-%files -n kernel%{_alt_kernel}-smp-net-rt2400
-%defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/kernel/drivers/net/wireless/*.ko*
-%endif
 %endif
