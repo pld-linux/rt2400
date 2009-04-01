@@ -1,0 +1,87 @@
+diff -upr rt2400-1.2.2-cvs-20060911./Module/rtmp_init.c rt2400-1.2.2-cvs-20060911/Module/rtmp_init.c
+--- rt2400-1.2.2-cvs-20060911./Module/rtmp_init.c	2005-11-16 02:07:06.000000000 +0100
++++ rt2400-1.2.2-cvs-20060911/Module/rtmp_init.c	2009-04-01 18:59:08.918706512 +0200
+@@ -1075,15 +1075,29 @@ VOID RTMPReadParametersFromFile(
+ 	INT 					retval, orgfsuid, orgfsgid;
+ 	UINT					Length;
+    	mm_segment_t			orgfs;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
++	const struct cred *old_cred;
++	struct cred *new_cred;
++#endif
++
+    	
+    	src = PROFILE_PATH;
+    	Length = sizeof(RTMP_PROFILE_SETTING);
+    	
+ 	// Save uid and gid used for filesystem access.
+ 	// Set user and group to 0 (root)	
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,29)
+ 	orgfsuid=current->fsuid;
+ 	orgfsgid=current->fsgid;
+ 	current->fsuid=current->fsgid=0;
++#else
++	new_cred=prepare_creds();
++	if (!new_cred)
++		return -ENOMEM;
++	new_cred->fsuid=0;
++	new_cred->fsgid=0;
++	old_cred=override_creds(new_cred);
++#endif
+     orgfs=get_fs();
+     set_fs(KERNEL_DS);
+ 
+@@ -1145,8 +1159,13 @@ VOID RTMPReadParametersFromFile(
+ 		}
+ 	}
+ 	set_fs(orgfs);
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,29)
+ 	current->fsuid=orgfsuid;
+ 	current->fsgid=orgfsgid;
++#else
++	revert_creds(old_cred);
++	put_cred(new_cred);
++#endif
+ }	
+ 
+ /*
+Only in rt2400-1.2.2-cvs-20060911/Module: rtmp_init.c~
+diff -upr rt2400-1.2.2-cvs-20060911./Module/rtmp_main.c rt2400-1.2.2-cvs-20060911/Module/rtmp_main.c
+--- rt2400-1.2.2-cvs-20060911./Module/rtmp_main.c	2009-04-01 18:32:49.531392535 +0200
++++ rt2400-1.2.2-cvs-20060911/Module/rtmp_main.c	2009-04-01 18:38:35.492185945 +0200
+@@ -96,7 +96,11 @@ static void
+ rt2x00_get_drvinfo(struct net_device *net_dev,
+ 	struct ethtool_drvinfo *drvinfo)
+ {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
++	PRTMP_ADAPTER   pAd = net_dev->ml_priv;
++#else
+ 	PRTMP_ADAPTER   pAd = net_dev->priv;
++#endif
+ 
+ 	strcpy(drvinfo->driver, DRV_NAME);
+ 	strcpy(drvinfo->version, DRV_VERSION);
+@@ -113,7 +117,11 @@ static void
+ rt2x00_get_regs(struct net_device *net_dev,
+ 	struct ethtool_regs *regs, void *data)
+ {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
++	PRTMP_ADAPTER   pAd = net_dev->ml_priv;
++#else
+ 	PRTMP_ADAPTER   pAd = net_dev->priv;
++#endif
+ 	unsigned int counter;
+ 
+ 	regs->len = CSR_REG_SIZE;
+@@ -134,7 +142,11 @@ static int
+ rt2x00_get_eeprom(struct net_device *net_dev,
+ 	struct ethtool_eeprom *eeprom, u8 *data)
+ {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
++	PRTMP_ADAPTER   pAd = net_dev->ml_priv;
++#else
+ 	PRTMP_ADAPTER   pAd = net_dev->priv;
++#endif
+ 	unsigned int counter;
+ 
+ 	for (counter = eeprom->offset; counter < eeprom->len; counter += sizeof(u16)) {
