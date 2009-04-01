@@ -16,7 +16,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel		7
+%define		rel		8
 %define		snap	-cvs-20060911
 %define		pname	rt2400
 Summary:	Linux driver for WLAN cards based on RT2400
@@ -33,6 +33,7 @@ Patch0:		%{pname}-inc.patch
 Patch1:		%{pname}-wireless_stats.patch
 Patch2:		%{pname}-skb.patch
 Patch3:		%{pname}-2.6.24.patch
+Patch4:		%{pname}-2.6.29.patch
 URL:		http://rt2x00.serialmonkey.com/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -82,6 +83,7 @@ Ten pakiet zawiera moduł jądra Linuksa.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 #%{__sed} -i -e 's@/lib@/%{_lib}@g' Utility/Makefile
 
